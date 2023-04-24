@@ -39,8 +39,7 @@ model = dict(
             num_outs=3,
             norm_cfg=dict(type='GN', num_groups=32),
             act_cfg=dict(type='ReLU'),
-            encoder=dict(
-                # type='mmdet.DetrTransformerEncoder',
+            encoder=dict(  # DeformableDetrTransformerEncoder
                 num_layers=6,
                 layer_cfg=dict(  # DeformableDetrTransformerEncoderLayer
                     self_attn_cfg=dict(  # MultiScaleDeformableAttention
@@ -55,23 +54,16 @@ model = dict(
                         feedforward_channels=1024,
                         num_fcs=2,
                         ffn_drop=0.0,
-                        act_cfg=dict(type='ReLU', inplace=True))),
-                init_cfg=None),
-            positional_encoding=dict(
-                # type='mmdet.SinePositionalEncoding',
-                num_feats=128,
-                normalize=True),
+                        act_cfg=dict(type='ReLU', inplace=True)))),
+            positional_encoding=dict(num_feats=128, normalize=True),
             init_cfg=None),
         enforce_decoder_input_project=False,
         positional_encoding=dict(
-            type='SinePositionalEncoding3D', 
-            num_feats=128, normalize=True),
+            type='SinePositionalEncoding3D', num_feats=128, normalize=True),
         transformer_decoder=dict(
-            # type='mmdet.models.layers.transformer.Mask2FormerTransformerDecoder',
             return_intermediate=True,
             num_layers=9,
-            layer_cfg=dict(
-                # type='mmdet.DetrTransformerDecoderLayer',
+            layer_cfg=dict(  # Mask2FormerTransformerDecoderLayer
                 self_attn_cfg=dict(  # MultiheadAttention
                     embed_dims=256,
                     num_heads=8,
