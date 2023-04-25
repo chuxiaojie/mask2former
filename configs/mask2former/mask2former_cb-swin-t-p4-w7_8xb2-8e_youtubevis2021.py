@@ -1,16 +1,19 @@
-_base_ = ['../../../configs/mask2former/mask2former_swin-t-p4-w7-224_8xb2-lsj-50e_coco-panoptic.py']
-pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
+_base_ = ['../../video_tracking/configs/vis/mask2former/mask2former_swin-t-p4-w7-224_8xb2-8e_youtubevis2021.py']
+
 
 custom_imports = dict(
-    imports=['projects.cbnet'], allow_failed_imports=False)
+    imports=['cbnet'], allow_failed_imports=False)
+
 depths = [2, 2, 6, 2]
 cb_iters = 2
 model = dict(
-    type='CB_Mask2Former',
+    type='CB_Mask2FormerVIS',
     backbone=dict(
+        _scope_='mmdet',
         type='CB_SwinTransformer',
         iters=cb_iters,
     ))
+
 
 # set all layers in backbone to lr_mult=0.1
 # set all norm layers, position_embeding,
