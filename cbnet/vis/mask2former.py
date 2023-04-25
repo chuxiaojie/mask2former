@@ -7,6 +7,7 @@ from mmtrack.models.mot import BaseMultiObjectTracker
 from mmtrack.registry import MODELS
 from mmtrack.utils import OptConfigType, OptMultiConfig, SampleList
 from mmtrack.models.vis.mask2former import Mask2Former
+import copy
 
 def add_prefix(inputs, prefix):
     outputs = dict()
@@ -34,7 +35,7 @@ class CB_Mask2FormerVIS(Mask2Former):
             if key.startswith('backbone.') and not (key.startswith('backbone.backbones.') or key.startswith('backbone.trans.')):
                 for iter_id in range(self.backbone.iters):
                     state_dict[key.replace('backbone.',
-                                        f'backbones.{iter_id}.')] = state_dict[key]
+                                        f'backbone.backbones.{iter_id}.')] = state_dict[key]
                 del state_dict[key]
 
         super()._load_from_state_dict(state_dict, prefix, local_metadata,
@@ -55,7 +56,7 @@ class CB_Mask2FormerVIS(Mask2Former):
 
         losses = dict()
         for i, x in enumerate(xs):
-            _losses = self.track_head.loss(x, data_samples)
+            _losses = self.track_head.loss(x, copy.deepcopy(data_samples))
             losses.update(add_prefix(_losses, f'cb{i}'))
         return losses
 
