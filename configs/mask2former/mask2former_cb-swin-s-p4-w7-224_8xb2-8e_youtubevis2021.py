@@ -1,4 +1,4 @@
-_base_ = ['../../video_tracking/configs/vis/mask2former/mask2former_swin-l-p4-w12-384-in21k_8xb2-8e_youtubevis2021.py']
+_base_ = ['../../video_tracking/configs/vis/mask2former/mask2former_swin-s-p4-w7-224_8xb2-8e_youtubevis2021.py']
 
 
 custom_imports = dict(
@@ -59,5 +59,4 @@ custom_keys.update({
 
 # optimizer
 optim_wrapper = dict(
-    # type='AmpOptimWrapper',
     paramwise_cfg=dict(custom_keys=custom_keys, norm_decay_mult=0.0))
