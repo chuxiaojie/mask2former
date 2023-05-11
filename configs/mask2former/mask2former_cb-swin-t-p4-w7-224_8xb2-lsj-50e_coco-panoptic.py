@@ -1,16 +1,16 @@
-_base_ = ['../../configs/mask2former/mask2former_swin-t-p4-w7-224_8xb2-lsj-50e_coco-panoptic.py']
+_base_ = [
+    '../../object_detection/configs/mask2former/mask2former_swin-t-p4-w7-224_8xb2-lsj-50e_coco-panoptic.py'
+]
 pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
 
-custom_imports = dict(
-    imports=['projects.cbnet'], allow_failed_imports=False)
+custom_imports = dict(imports=['cbnet'], allow_failed_imports=False)
 depths = [2, 2, 6, 2]
 cb_iters = 2
-model = dict(
-    type='CB_Mask2Former',
-    backbone=dict(
-        type='CB_SwinTransformer',
-        iters=cb_iters,
-    ))
+model = dict(type='CB_Mask2Former',
+             backbone=dict(
+                 type='CB_SwinTransformer',
+                 iters=cb_iters,
+             ))
 
 # set all layers in backbone to lr_mult=0.1
 # set all norm layers, position_embeding,
@@ -34,8 +34,7 @@ custom_keys.update({
 })
 custom_keys.update({
     f'backbone.backbones.{iter_id}.{module}': backbone_norm_multi
-    for module in ['patch_embed.norm', 'norm']
-    for iter_id in range(cb_iters)
+    for module in ['patch_embed.norm', 'norm'] for iter_id in range(cb_iters)
 })
 custom_keys.update({
     f'backbone.backbones.{iter_id}.{module}': backbone_embed_multi
@@ -43,15 +42,15 @@ custom_keys.update({
     for iter_id in range(cb_iters)
 })
 custom_keys.update({
-    f'backbone.backbones.{iter_id}.stages.{stage_id}.blocks.{block_id}.norm': backbone_norm_multi
+    f'backbone.backbones.{iter_id}.stages.{stage_id}.blocks.{block_id}.norm':
+    backbone_norm_multi
     for stage_id, num_blocks in enumerate(depths)
-    for block_id in range(num_blocks)
-    for iter_id in range(cb_iters)
+    for block_id in range(num_blocks) for iter_id in range(cb_iters)
 })
 custom_keys.update({
-    f'backbone.backbones.{iter_id}.stages.{stage_id}.downsample.norm': backbone_norm_multi
-    for stage_id in range(len(depths) - 1)
-    for iter_id in range(cb_iters)
+    f'backbone.backbones.{iter_id}.stages.{stage_id}.downsample.norm':
+    backbone_norm_multi
+    for stage_id in range(len(depths) - 1) for iter_id in range(cb_iters)
 })
 
 # optimizer
